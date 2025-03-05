@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  apache-php:
+    image: php:apache
+    container_name: apache-php
+    volumes:
+      - ./www:/var/www/html
+      - ./apache-config:/etc/apache2/sites-enabled
+    ports:
+      - "80:80"
+    environment:
+      APACHE_RUN_USER: www-data
+      APACHE_RUN_GROUP: www-data
+      XDEBUG_MODE: debug,develop
+      XDEBUG_CONFIG: client_host=host.docker.internal
+    working_dir: /var/www/html
+    restart: always
+    depends_on:
+      - mysql
+    command: >
+      bash -c "
+      if [ ! -f /var/www/html/.modules_installed ]; then
+        pecl install xdebug &&
+        docker-php-ext-install pdo pdo_mysql mysqli &&
+        docker-php-ext-enable xdebug pdo pdo_mysql mysqli &&
+        touch /var/www/html/.modules_installed;
+      fi;
+      apache2-foreground"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    ports:
+      - "3306:3306"
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    ports:
+      - "8081:80"
+
+volumes:
+  mysql_data:
