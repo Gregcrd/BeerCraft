@@ -12,15 +12,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $origin = trim($_POST['origin']);
     $alcohol = floatval($_POST['alcohol']);
     $description = trim($_POST['description']);
+    $image = trim($_POST['image']); // Récupération de l'URL de l'image
     $selectedCategories = $_POST['categories'] ?? [];
 
-    if (!empty($name) && !empty($origin) && $alcohol > 0) {
+    if (!empty($name) && !empty($origin) && $alcohol > 0 && !empty($image)) {
         try {
             $pdo->beginTransaction();
 
-            // Insérer la bière
-            $stmt = $pdo->prepare("INSERT INTO Beer (name, origin, alcohol, description) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$name, $origin, $alcohol, $description]);
+            // Insérer la bière avec l'image
+            $stmt = $pdo->prepare("INSERT INTO Beer (name, origin, alcohol, description, image) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $origin, $alcohol, $description, $image]);
             $beerId = $pdo->lastInsertId();
 
             // Insérer les catégories sélectionnées
@@ -53,30 +54,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+<body class="bg-white text-black flex items-center justify-center h-screen">
 
-    <div class="w-96 bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-center text-red-400">Ajouter une Bière</h1>
+    <div class="w-96 bg-gray-400 p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-center text-gray-700">Ajouter une Bière</h1>
 
         <?php if (!empty($message)) : ?>
-            <p class="text-red-400 text-center mt-2"><?= htmlspecialchars($message) ?></p>
+            <p class="text-red-500 text-center mt-2"><?= htmlspecialchars($message) ?></p>
         <?php endif; ?>
 
         <form method="post" class="mt-4 space-y-4">
             <input type="text" name="name" placeholder="Nom" required
-                class="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md">
+                class="w-full px-4 py-2 bg-gray-300 text-black border border-gray-400 rounded-md">
 
             <input type="text" name="origin" placeholder="Origine" required
-                class="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md">
+                class="w-full px-4 py-2 bg-gray-300 text-black border border-gray-400 rounded-md">
 
             <input type="number" step="0.1" name="alcohol" placeholder="Taux d'alcool (%)" required
-                class="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md">
+                class="w-full px-4 py-2 bg-gray-300 text-black border border-gray-400 rounded-md">
+
+            <input type="text" name="image" placeholder="URL de l'image" required
+                class="w-full px-4 py-2 bg-gray-300 text-black border border-gray-400 rounded-md">
 
             <textarea name="description" placeholder="Description de la bière" rows="4"
-                class="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md"></textarea>
+                class="w-full px-4 py-2 bg-gray-300 text-black border border-gray-400 rounded-md"></textarea>
 
-            <label class="block text-gray-400">Catégories :</label>
-            <select name="categories[]" multiple class="w-full px-4 py-2 bg-gray-700 text-white border border-gray-600 rounded-md">
+            <label class="block text-gray-700 font-semibold">Catégories :</label>
+            <select name="categories[]" multiple class="w-full px-4 py-2 bg-gray-300 text-black border border-gray-400 rounded-md">
                 <?php foreach ($categories as $category) : ?>
                     <option value="<?= $category['id'] ?>"><?= htmlspecialchars($category['name']) ?></option>
                 <?php endforeach; ?>
@@ -84,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             <div class="flex justify-between">
                 <a href="beers.php" class="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-500">Annuler</a>
-                <button type="submit" class="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                     Ajouter
                 </button>
             </div>

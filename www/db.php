@@ -1,8 +1,20 @@
 <?php
-$host = "mysql-db"; // Nom du service MySQL dans Docker Compose
-$dbname = "BeerCraft2"; // Mettre le bon nom de la base
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$host = "mysql-db";
+$dbname = "BeerCraft2"; // Nom de la base de données
 $username = "root";
 $password = "root";
+
+// Vérification pour éviter de redéclarer la fonction
+if (!function_exists('isAdmin')) {
+    function isAdmin()
+    {
+        return isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
+    }
+}
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);

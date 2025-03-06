@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'db.php';
+require_once 'header.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,40 +14,31 @@ require 'db.php';
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-900 text-white flex flex-col items-center py-10">
+<body class="bg-gray-100 flex flex-col min-h-screen">
 
-    <h1 class="text-3xl font-bold mb-6">Bienvenue sur Beercraft</h1>
+    <!-- Conteneur principal pour centrer la carte -->
+    <div class="flex flex-grow items-center justify-center mt-20">
+        <div class="bg-white p-8 rounded-lg shadow-md w-96 text-center">
+            <h1 class="text-2xl font-bold text-gray-700 mb-4">Bienvenue sur Beercraft !</h1>
 
-    <?php if (isset($_SESSION['message'])) : ?>
-        <p class="text-green-400 text-center"><?= $_SESSION['message']; ?></p>
-        <?php unset($_SESSION['message']); ?>
-    <?php endif; ?>
-
-    <div class="mb-6">
-        <?php if (isset($_SESSION['user'])) : ?>
-            <p class="text-gray-300">Connecté en tant que <strong><?= htmlspecialchars($_SESSION['user']['first_name']) . " " . htmlspecialchars($_SESSION['user']['last_name']) ?></strong></p>
-            <p class="text-gray-400">Rôle : <?= htmlspecialchars($_SESSION['user']['role']) ?></p>
-
-            <div class="flex justify-center space-x-4 mt-4">
-                <a href="logout.php" class="px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600">
-                    Se déconnecter
-                </a>
-                <a href="beers.php" class="px-3 py-1 bg-yellow-500 text-white text-sm rounded-md hover:bg-yellow-600">
+            <?php if (isset($_SESSION['user'])) : ?>
+                <p class="text-gray-600 mb-4">Connecté en tant que <strong><?= htmlspecialchars($_SESSION['user']['first_name']) ?></strong></p>
+                <p class="text-gray-500 mb-6">Rôle : <?= htmlspecialchars($_SESSION['user']['role']) ?></p>
+                <a href="beers.php" class="px-4 py-2 text-gray-700 border border-gray-400 rounded-md hover:bg-gray-200">
                     Voir les bières
                 </a>
-            </div>
-
-        <?php else : ?>
-            <div class="flex justify-center space-x-4 mt-4">
-                <a href="register.php" class="px-3 py-1 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600">
+                <a href="logout.php" class="px-4 py-2 text-gray-700 border border-gray-400 rounded-md hover:bg-gray-200 ml-2">
+                    Déconnexion
+                </a>
+            <?php else : ?>
+                <a href="register.php" class="px-4 py-2 text-gray-700 border border-gray-400 rounded-md hover:bg-gray-200">
                     S'inscrire
                 </a>
-
-                <a href="login.php" class="px-3 py-1 bg-green-500 text-white text-sm rounded-md hover:bg-green-600">
+                <a href="login.php" class="px-4 py-2 text-gray-700 border border-gray-400 rounded-md hover:bg-gray-200 ml-2">
                     Se connecter
                 </a>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
     </div>
 
 </body>
