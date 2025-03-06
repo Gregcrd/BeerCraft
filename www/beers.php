@@ -2,7 +2,7 @@
 require 'db.php';
 require_once 'header.php';
 
-// Récupérer toutes les catégories pour le filtre
+// Récupérer toutes les catégories  filtre
 $categories = $pdo->query("SELECT * FROM Category ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
 
 // Vérifier si une catégorie est sélectionnée
@@ -37,7 +37,7 @@ $beers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-gray-100 flex flex-col min-h-screen">
 
     <div class="container mx-auto px-4 py-10">
-        <h1 class="text-3xl font-bold text-center text-gray-700 mb-6">Liste des Bières</h1>
+        <h1 class="text-3xl font-bold text-center text-gray-700 mb-6">Notre catalogue</h1>
 
         <!-- Formulaire de filtre par catégorie -->
         <div class="mb-6 flex justify-center">
